@@ -1,10 +1,13 @@
 %{
 #include <stdio.h>
 #include "symbol_table.h"
+#include "logs.h"
 #include "asm_output.h"
 
 int yylex(void);
 void yyerror(char *);
+
+#define YYSTYPE char *
 %}
 
 %token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tADD tSUB tMUL tDIV
@@ -16,47 +19,49 @@ void yyerror(char *);
 %left  tMUL tDIV
 
 %%
-main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS bloc
-    {
-        printf("coucou");
-        printf("%d\n", $1);
-    };
-bloc: tOPEN_BRACKET code tCLOSE_BRACKET
-    {
-    };
-code: statement
-    | code statement
-    {
-    };
-statement: printf_call  tEND_LINE
-         | expr         tEND_LINE
-         | declarations tEND_LINE
-    {
-    };
-printf_call: tPRINTF tOPEN_PARENTHESIS seq_of_vars tCLOSE_PARENTHESIS
+main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS compound_statement
+    ;
+
+type: tINT
+    | tFLOAT
+    {};
+
+expr_statement: expr_statement tADD expr_statement
+              | expr_statement tSUB expr_statement
+              | expr_statement tMUL expr_statement
+              | expr_statement tDIV expr_statement
+              | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
+              | tVARIABLE_NAME
+              | tINTEGER
+    ;
+assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
     {
     };
-declarations: tINT seq_of_vars
+compound_statement: tOPEN_BRACKET declarations statements tCLOSE_BRACKET
     {
-    };
-seq_of_vars: tVARIABLE_NAME
-    | seq_of_vars tCOMMA tVARIABLE_NAME
-    {
-    };
-expr: expr tEQUAL  expr
-    | expr tADD   expr
-    | expr tSUB   expr
-    | expr tMUL   expr
-    | expr tDIV   expr
-    | tOPEN_PARENTHESIS expr tCLOSE_PARENTHESIS
-    | tVARIABLE_NAME
-    | tINTEGER
-    {
-        printf("Some code...");
         st_enter_scope();
 
         st_leave_scope();
     };
+
+statement: expr_statement         tEND_LINE
+         | assignment_statement tEND_LINE
+         | compound_statement     tEND_LINE
+         | tEND_LINE
+    ;
+statements: statement
+          | statements statement
+    ;
+
+declaration: type initializer_list   tEND_LINE
+    ;
+declarations: declaration
+            | declarations declaration
+    ;
+
+initializer_list: tVARIABLE_NAME
+                | initializer_list tCOMMA tVARIABLE_NAME
+    ;
 %%
 int main() {
     st_init();

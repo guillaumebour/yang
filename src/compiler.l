@@ -1,4 +1,5 @@
 %{
+#include "parsing_common.h"
 #include "y.tab.h"
 %}
 
@@ -25,5 +26,8 @@ while                   return tWHILE;
 printf                  return tPRINTF;
 {D}+                    |
 {D}+{E}                 return tINTEGER;
-[a-zA-Z_][a-zA-Z0-9_]*  return tVARIABLE_NAME;
+[a-zA-Z_][a-zA-Z0-9_]*  {
+                            yylval=strdup(yytext);
+                            return tVARIABLE_NAME;
+                        }
 [ \n\t]                 ;

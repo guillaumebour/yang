@@ -3,11 +3,10 @@
 #include "symbol_table.h"
 #include "logs.h"
 #include "asm_output.h"
+#include "parsing_common.h"
 
 int yylex(void);
 void yyerror(char *);
-
-#define YYSTYPE char *
 %}
 
 %token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tADD tSUB tMUL tDIV

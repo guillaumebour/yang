@@ -35,6 +35,12 @@ expr_statement: expr_statement tADD expr_statement
     ;
 assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
     {
+        addr_t addr = st_search($1);
+        if(addr != INCORRECT_ADDRESS)
+            asm_output("str %d, r0\n", addr);
+        else {
+            log_error("Variable %s non définie", $1);
+        }
     };
 scope_begin: tOPEN_BRACKET
     {
@@ -64,8 +70,11 @@ declarations:
             | declarations declaration
     ;
 
-initializer_list: tVARIABLE_NAME
-                | initializer_list tCOMMA tVARIABLE_NAME
+initializer_list: initializer_list tCOMMA initializer_list
+                | tVARIABLE_NAME
+    {
+        st_push($1);
+    }
     ;
 %%
 int main() {

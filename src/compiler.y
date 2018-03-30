@@ -38,6 +38,14 @@ expr_statement: expr_statement tADD expr_statement
               | expr_statement tDIV expr_statement
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
               | tVARIABLE_NAME
+    {
+        addr_t addr = st_search($1);
+        if(addr != INCORRECT_ADDRESS) {
+            $$ = addr;
+        } else {
+            log_error("Variable %s non définie", $1);
+        }
+    }
               | tINTEGER
     {
         int val = $1;

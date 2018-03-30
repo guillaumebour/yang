@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "symbol_table.h"
 #include "asm_output.h"
 
 int yylex(void);
@@ -52,9 +53,13 @@ expr: expr tEQUAL  expr
     | tINTEGER
     {
         printf("Some code...");
+        st_enter_scope();
+
+        st_leave_scope();
     };
 %%
 int main() {
+    st_init();
     asm_output_init(NULL);
     yyparse();
     asm_output_close();

@@ -51,6 +51,15 @@ expr_statement: expr_statement tADD expr_statement
         $$ = tmp;                
     }
               | expr_statement tMUL expr_statement
+    {
+        addr_t tmp = st_new_tmp();
+        asm_output("load r1, 0x%x\n", $1);                  
+        asm_output("load r2, 0x%x\n", $3);
+        asm_output("mul r0, r1, r2\n");
+        asm_output("str 0x%x, r0\n", tmp);
+        $$ = tmp;                
+    }
+    
               | expr_statement tDIV expr_statement
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
               | tVARIABLE_NAME

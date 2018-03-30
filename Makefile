@@ -8,3 +8,6 @@ y.tab.c: compiler.y
 
 compiler: lex.yy.c y.tab.c
 	gcc -o compiler asm_output.c symbol_table.c logs.c y.tab.c lex.yy.c libfl.a -ly -L/home/revest/.local/lib/
+
+clean:
+	rm compiler

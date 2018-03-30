@@ -7,4 +7,4 @@ y.tab.c: compiler.y
 	/home/revest/.local/bin/yacc -v -d compiler.y
 
 compiler: lex.yy.c y.tab.c
-	gcc -o compiler y.tab.c lex.yy.c libfl.a -ly -L/home/revest/.local/lib/
+	gcc -o compiler asm_output.c y.tab.c lex.yy.c libfl.a -ly -L/home/revest/.local/lib/

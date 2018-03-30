@@ -1,5 +1,7 @@
 %{
 #include <stdio.h>
+#include "asm_output.h"
+
 int yylex(void);
 void yyerror(char *);
 %}
@@ -53,5 +55,7 @@ expr: expr tEQUAL  expr
     };
 %%
 int main() {
+    asm_output_init(NULL);
     yyparse();
+    asm_output_close();
 }

@@ -48,13 +48,15 @@ statement: expr_statement         tEND_LINE
          | compound_statement     tEND_LINE
          | tEND_LINE
     ;
-statements: statement
+statements:
+          | statement
           | statements statement
     ;
 
 declaration: type initializer_list   tEND_LINE
     ;
-declarations: declaration
+declarations:
+            | declaration
             | declarations declaration
     ;
 

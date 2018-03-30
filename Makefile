@@ -14,4 +14,4 @@ build/compiler: build/lex.yy.c build/y.tab.c
 		build/y.tab.c build/lex.yy.c -lfl -ly -Isrc/ -L/home/revest/.local/lib/
 
 clean:
-	rm -r build/
+	rm -rf build/

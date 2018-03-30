@@ -1,9 +1,2 @@
-*.a
-flex
-*.o
-compiler
-input
-y.output
-lex.yy.c
-y.tab.c
-y.tab.h
+input.c
+build/

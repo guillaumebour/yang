@@ -1,13 +1,17 @@
-all: compiler
+all: build build/compiler
 
-lex.yy.c: compiler.l
-	./flex compiler.l
+build:
+	mkdir -p build/
 
-y.tab.c: compiler.y
-	/home/revest/.local/bin/yacc -v -d compiler.y
+build/lex.yy.c: src/compiler.l
+	flex -o build/lex.yy.c src/compiler.l
 
-compiler: lex.yy.c y.tab.c
-	gcc -o compiler asm_output.c symbol_table.c logs.c y.tab.c lex.yy.c libfl.a -ly -L/home/revest/.local/lib/
+build/y.tab.c: src/compiler.y
+	yacc -o build/y.tab.c -v -d src/compiler.y
+
+build/compiler: build/lex.yy.c build/y.tab.c
+	gcc -o build/compiler src/asm_output.c src/symbol_table.c src/logs.c \
+		build/y.tab.c build/lex.yy.c -lfl -ly -Isrc/ -L/home/revest/.local/lib/
 
 clean:
-	rm compiler
+	rm -r build/

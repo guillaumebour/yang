@@ -36,12 +36,16 @@ expr_statement: expr_statement tADD expr_statement
 assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
     {
     };
-compound_statement: tOPEN_BRACKET declarations statements tCLOSE_BRACKET
+scope_begin: tOPEN_BRACKET
     {
         st_enter_scope();
-
+    };
+scope_end: tCLOSE_BRACKET
+    {
         st_leave_scope();
     };
+compound_statement: scope_begin declarations statements scope_end
+    ;
 
 statement: expr_statement         tEND_LINE
          | assignment_statement tEND_LINE

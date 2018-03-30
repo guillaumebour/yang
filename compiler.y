@@ -7,13 +7,13 @@ int yylex(void);
 void yyerror(char *);
 %}
 
-%token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tPLUS tMINUS tMUL tDIV
+%token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tADD tSUB tMUL tDIV
 %token tEQUAL tOPEN_PARENTHESIS tCLOSE_PARENTHESIS tNEW_LINE tEND_LINE tPRINTF
-%token tINTEGER tVARIABLE_NAME tDELIMITER tWHILE tFOR tCOMMA
+%token tINTEGER tVARIABLE_NAME tDELIMITER tWHILE tFOR tCOMMA tFLOAT
 
 %right tEQUAL
-%left  tPLUS tMINUS
-%left  tMUL  tDIV
+%left  tADD tSUB
+%left  tMUL tDIV
 
 %%
 main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS bloc
@@ -44,8 +44,8 @@ seq_of_vars: tVARIABLE_NAME
     {
     };
 expr: expr tEQUAL  expr
-    | expr tPLUS  expr
-    | expr tMINUS expr
+    | expr tADD   expr
+    | expr tSUB   expr
     | expr tMUL   expr
     | expr tDIV   expr
     | tOPEN_PARENTHESIS expr tCLOSE_PARENTHESIS

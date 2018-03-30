@@ -33,6 +33,14 @@ type: tINT
     {};
 
 expr_statement: expr_statement tADD expr_statement
+    {
+        addr_t tmp = st_new_tmp();
+        asm_output("load r1, 0x%x\n", $1);                  
+        asm_output("load r2, 0x%x\n", $3);
+        asm_output("add r0, r1, r2\n");
+        asm_output("str 0x%x, r0\n", tmp);
+        $$ = tmp;                
+    }
               | expr_statement tSUB expr_statement
               | expr_statement tMUL expr_statement
               | expr_statement tDIV expr_statement

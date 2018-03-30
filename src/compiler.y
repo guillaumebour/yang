@@ -3,11 +3,15 @@
 #include "symbol_table.h"
 #include "logs.h"
 #include "asm_output.h"
-#include "parsing_common.h"
 
 int yylex(void);
 void yyerror(char *);
 %}
+
+%union {
+    int nb;
+    char *str;
+}
 
 %token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tADD tSUB tMUL tDIV
 %token tEQUAL tOPEN_PARENTHESIS tCLOSE_PARENTHESIS tNEW_LINE tEND_LINE tPRINTF
@@ -17,7 +21,10 @@ void yyerror(char *);
 %left  tADD tSUB
 %left  tMUL tDIV
 
+%type <str> tINT tVARIABLE_NAME
+%type <nb>  tINTEGER expr_statement 
 %%
+
 main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS compound_statement
     ;
 
@@ -32,13 +39,21 @@ expr_statement: expr_statement tADD expr_statement
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
               | tVARIABLE_NAME
               | tINTEGER
+    {
+        int val = $1;
+        addr_t addr = st_new_tmp();
+        asm_output("afc r0, #%d\n", val);
+        asm_output("str 0x%x, r0\n", addr);
+        $$ = addr;
+    }
     ;
 assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
     {
         addr_t addr = st_search($1);
-        if(addr != INCORRECT_ADDRESS)
-            asm_output("str %d, r0\n", addr);
-        else {
+        if(addr != INCORRECT_ADDRESS) {
+            asm_output("load r0, 0x%x\n", $3);
+            asm_output("str 0x%x, r0\n", addr);
+        } else {
             log_error("Variable %s non définie", $1);
         }
     };

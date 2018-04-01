@@ -59,7 +59,6 @@ expr_statement: expr_statement tADD expr_statement
         asm_output("str 0x%x, r0\n", tmp);
         $$ = tmp;                
     }
-    
               | expr_statement tDIV expr_statement
     {
         addr_t tmp = st_new_tmp();
@@ -69,8 +68,10 @@ expr_statement: expr_statement tADD expr_statement
         asm_output("str 0x%x, r0\n", tmp);
         $$ = tmp;                
     }
-
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
+    {
+        $$ = $2;
+    }
               | tVARIABLE_NAME
     {
         addr_t addr = st_search($1);
@@ -99,6 +100,7 @@ assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
             log_error("Variable %s non définie", $1);
         }
     };
+
 scope_begin: tOPEN_BRACKET
     {
         st_enter_scope();

@@ -1,5 +1,8 @@
+#include "logs.h"
 #include <stdio.h>
 #include <stdarg.h>
+
+static int verbosity_level;
 
 void log_error(char *msg, ...)
 {
@@ -19,4 +22,13 @@ void log_warning(char *msg, ...)
     vfprintf(stderr, msg, argptr);
     fprintf(stderr, "\n");
     va_end(argptr);
+}
+
+void set_verbosity_level(int level)
+{
+    if(level >= -1 || level <= 3) {
+        verbosity_level = level;
+    } else {
+        verbosity_level = VERBOSITY_NORMAL;
+    }
 }

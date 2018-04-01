@@ -3,17 +3,14 @@
 
 FILE *output;
 
-void asm_output_init(char *file_name)
+void asm_output_init() {}
+
+void set_asm_output(char * filename)
 {
-    if(file_name)
-        output = fopen(file_name, "w");
+    if(filename)
+        output = fopen(filename, "w");
     else
         output = stdout;
-}
-
-void asm_output_close()
-{
-    fclose(output);
 }
 
 void asm_output(char *line, ...)
@@ -22,4 +19,9 @@ void asm_output(char *line, ...)
     va_start(argptr, line);
     vfprintf(output, line, argptr);
     va_end(argptr);
+}
+
+void asm_output_close()
+{
+    fclose(output);
 }

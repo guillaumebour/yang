@@ -41,7 +41,7 @@ int handle_args(int argc, char * argv[])
     }
 
     set_verbosity_level(verbose_level);
-    asm_output_init(filename);
+    set_asm_output(filename);
 
     if(filename) {
         free(filename);

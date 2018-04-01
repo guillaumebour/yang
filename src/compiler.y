@@ -141,6 +141,7 @@ initializer_list: initializer_list tCOMMA initializer_list
 %%
 int main(int argc, char *argv[]) {
     st_init();
+    asm_output_init();
     if(handle_args(argc, argv)) {
        return EXIT_FAILURE;
     }

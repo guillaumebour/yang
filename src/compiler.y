@@ -1,8 +1,11 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "symbol_table.h"
 #include "logs.h"
 #include "asm_output.h"
+#include "logs.h"
+#include "options.h"
 
 int yylex(void);
 void yyerror(char *);
@@ -136,9 +139,11 @@ initializer_list: initializer_list tCOMMA initializer_list
     }
     ;
 %%
-int main() {
+int main(int argc, char *argv[]) {
     st_init();
-    asm_output_init(NULL);
+    if(handle_args(argc, argv)) {
+       return EXIT_FAILURE;
+    }
     yyparse();
     asm_output_close();
 }

@@ -111,7 +111,7 @@ void st_enter_scope()
 
 void st_leave_scope()
 {
-    while(symbol_table.position >= 0) { 
+    while(symbol_table.position < STACK_SIZE) {
         struct stack_elem top_elem = symbol_table.stack_array[symbol_table.position];
 
         if(top_elem.scope_depth == symbol_table.current_scope_depth)
@@ -122,4 +122,3 @@ void st_leave_scope()
 
     symbol_table.current_scope_depth--;
 }
-

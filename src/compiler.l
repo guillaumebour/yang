@@ -4,6 +4,7 @@
 
 D                       [0-9]
 E                       [Ee][-+]?{D}+
+%x COMMENT
 %%
 main                    return tMAIN;
 [{]                     return tOPEN_BRACKET;
@@ -33,3 +34,14 @@ printf                  return tPRINTF;
                             return tVARIABLE_NAME;
                         }
 [ \n\t]                 ;
+\/\/.*$                 ;
+<INITIAL>{
+"/*"                   BEGIN(COMMENT);
+}
+<COMMENT>{
+"*/"      BEGIN(INITIAL);
+[^*\n]+
+"*"
+\n        yylineno++;
+}
+

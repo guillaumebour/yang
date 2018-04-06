@@ -39,20 +39,20 @@ type: tINT
 expr_statement: expr_statement tADD expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);                  
+        asm_output("load r1, 0x%x\n", $1);
         asm_output("load r2, 0x%x\n", $3);
         asm_output("add r0, r1, r2\n");
         asm_output("str 0x%x, r0\n", tmp);
-        $$ = tmp;                
+        $$ = tmp;
     }
               | expr_statement tSUB expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);                  
+        asm_output("load r1, 0x%x\n", $1);
         asm_output("load r2, 0x%x\n", $3);
         asm_output("sub r0, r1, r2\n");
         asm_output("str 0x%x, r0\n", tmp);
-        $$ = tmp;                
+        $$ = tmp;
     }
               | expr_statement tMUL expr_statement
     {
@@ -61,7 +61,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output("load r2, 0x%x\n", $3);
         asm_output("mul r0, r1, r2\n");
         asm_output("str 0x%x, r0\n", tmp);
-        $$ = tmp;                
+        $$ = tmp;
     }
               | expr_statement tDIV expr_statement
     {
@@ -70,7 +70,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output("load r2, 0x%x\n", $3);
         asm_output("div r0, r1, r2\n");
         asm_output("str 0x%x, r0\n", tmp);
-        $$ = tmp;                
+        $$ = tmp;
     }
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
     {
@@ -117,7 +117,7 @@ compound_statement: scope_begin declarations statements scope_end
     ;
 
 statement: expr_statement         tEND_LINE
-         | assignment_statement tEND_LINE
+         | assignment_statement   tEND_LINE
          | compound_statement     tEND_LINE
          | tEND_LINE
     ;

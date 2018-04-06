@@ -60,7 +60,7 @@ addr_t st_pop()
 
     if(symbol_table.position <= 0)
         return INCORRECT_ADDRESS;
-   
+
     top_elem = symbol_table.stack_array[symbol_table.position];
 
     addr_t ret = top_elem.address;
@@ -101,7 +101,7 @@ addr_t st_search(identifier_t variable_name)
         i--;
     }
 
-    return INCORRECT_ADDRESS; 
+    return INCORRECT_ADDRESS;
 }
 
 void st_enter_scope()

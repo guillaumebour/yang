@@ -27,6 +27,9 @@ void yyerror(char *);
 
 %type <str> tINT tVARIABLE_NAME
 %type <nb>  tINTEGER expr_statement 
+
+%nonassoc tNO_ELSE
+%nonassoc tELSE
 %%
 
 main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS compound_statement
@@ -104,6 +107,17 @@ assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
             log_error("Variable %s non définie", $1);
         }
     };
+selection_statement_base: tIF tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
+    {
+        asm_output_append_jmpc_placeholder();
+    } statement
+    {
+        asm_output_resolve_last_jmpc();
+    }
+    ;
+selection_statement: selection_statement_base %prec tNO_ELSE
+                   | selection_statement_base tELSE statement
+    ;
 
 scope_begin: tOPEN_BRACKET
     {

@@ -165,3 +165,7 @@ int main(int argc, char *argv[]) {
     asm_output_dump();
     asm_output_close();
 }
+
+void yyerror(char *p) {}
+
+void yywrap() {}

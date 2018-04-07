@@ -1,5 +1,5 @@
 %{
-#include "y.tab.h"
+#include "parser.h"
 %}
 
 D                       [0-9]

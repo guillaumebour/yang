@@ -2,3 +2,12 @@ This is a simple C compiler for a custom CPU architecture.
 
 It is based on the following C BNF:
 https://cs.wmich.edu/~gupta/teaching/cs4850/sumII06/The%20syntax%20of%20C%20in%20Backus-Naur%20form.htm
+
+Compilation
+===========
+
+This project can be compiled using the autotools with the following commands:
+
+autoreconf --install
+./configure
+make

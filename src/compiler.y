@@ -118,26 +118,27 @@ compound_statement: scope_begin declarations statements scope_end
 
 statement: expr_statement         tEND_LINE
          | assignment_statement   tEND_LINE
-         | compound_statement     tEND_LINE
+         | compound_statement
+         | selection_statement
          | tEND_LINE
     ;
 statements:
-          | statement
           | statements statement
     ;
 
-declaration: type initializer_list   tEND_LINE
+declaration: type initializers   tEND_LINE
     ;
 declarations:
-            | declaration
             | declarations declaration
     ;
 
-initializer_list: initializer_list tCOMMA initializer_list
-                | tVARIABLE_NAME
+initializer: tVARIABLE_NAME
     {
         st_push($1);
     }
+    ;
+initializers: initializer tCOMMA initializers
+            | initializer
     ;
 %%
 int main(int argc, char *argv[]) {

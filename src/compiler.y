@@ -39,37 +39,37 @@ type: tINT
 expr_statement: expr_statement tADD expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);
-        asm_output("load r2, 0x%x\n", $3);
-        asm_output("add r0, r1, r2\n");
-        asm_output("str 0x%x, r0\n", tmp);
+        asm_output_append_LOAD(R1,  $1);
+        asm_output_append_LOAD(R2,  $3);
+        asm_output_append_ADD (R0,  R1, R2);
+        asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
               | expr_statement tSUB expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);
-        asm_output("load r2, 0x%x\n", $3);
-        asm_output("sub r0, r1, r2\n");
-        asm_output("str 0x%x, r0\n", tmp);
+        asm_output_append_LOAD(R1,  $1);
+        asm_output_append_LOAD(R2,  $3);
+        asm_output_append_SUB (R0,  R1, R2);
+        asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
               | expr_statement tMUL expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);                  
-        asm_output("load r2, 0x%x\n", $3);
-        asm_output("mul r0, r1, r2\n");
-        asm_output("str 0x%x, r0\n", tmp);
+        asm_output_append_LOAD(R1,  $1);
+        asm_output_append_LOAD(R2,  $3);
+        asm_output_append_MUL (R0,  R1, R2);
+        asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
               | expr_statement tDIV expr_statement
     {
         addr_t tmp = st_new_tmp();
-        asm_output("load r1, 0x%x\n", $1);                  
-        asm_output("load r2, 0x%x\n", $3);
-        asm_output("div r0, r1, r2\n");
-        asm_output("str 0x%x, r0\n", tmp);
+        asm_output_append_LOAD(R1,  $1);
+        asm_output_append_LOAD(R2,  $3);
+        asm_output_append_DIV (R0,  R1, R2);
+        asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
               | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
@@ -89,8 +89,8 @@ expr_statement: expr_statement tADD expr_statement
     {
         int val = $1;
         addr_t addr = st_new_tmp();
-        asm_output("afc r0, #%d\n", val);
-        asm_output("str 0x%x, r0\n", addr);
+        asm_output_append_AFC(R0,   val);
+        asm_output_append_STR(addr, R0);
         $$ = addr;
     }
     ;
@@ -98,8 +98,8 @@ assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
     {
         addr_t addr = st_search($1);
         if(addr != INCORRECT_ADDRESS) {
-            asm_output("load r0, 0x%x\n", $3);
-            asm_output("str 0x%x, r0\n", addr);
+            asm_output_append_LOAD(R0,   $3);
+            asm_output_append_STR (addr, R0);
         } else {
             log_error("Variable %s non définie", $1);
         }
@@ -147,5 +147,6 @@ int main(int argc, char *argv[]) {
        return EXIT_FAILURE;
     }
     yyparse();
+    asm_output_dump();
     asm_output_close();
 }

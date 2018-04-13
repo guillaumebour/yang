@@ -15,7 +15,9 @@ enum opcode_t {
     SUP = 0xC,
     SUPE = 0xD,
     JMP = 0xE,
-    JMPC = 0xF
+    JMPC = 0xF,
+
+    JMPC_PLCHLDR = 0xFE
 };
 typedef enum opcode_t opcode_t;
 typedef char operand_t;
@@ -38,7 +40,6 @@ typedef unsigned int instr_index_t;
 #define R14 14
 #define PC  15
 
-#define JMPC_PLCHLDR 0xFE
 #define IGN          0xFF
 
 void asm_output_init();

@@ -36,7 +36,7 @@ typedef unsigned int instr_index_t;
 #define R12 12
 #define R13 13
 #define R14 14
-#define R15 15
+#define PC  15
 
 #define JMPC_PLCHLDR 0xFE
 #define IGN          0xFF

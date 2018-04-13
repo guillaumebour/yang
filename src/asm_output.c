@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include "logs.h"
 
 #define MAX_INSTR_NB 2048
 
@@ -126,10 +127,10 @@ void asm_output_dump()
                 fprintf(output, "JMPC 0x%x, R%d\n", inst.ope1, inst.ope2);
                 break;
             case JMPC_PLCHLDR:
-                fprintf(stderr, "Unexpected undefined branching. Ignoring.\n");
+                log_error("Unexpected undefined branching. Ignoring.");
                 break;
             default:
-                fprintf(stderr, "Unexpected generated instruction. Ignoring.\n");
+                log_error("Unexpected generated instruction. Ignoring.");
             }
             i ++;
         }

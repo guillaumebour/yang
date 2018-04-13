@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 
 enum opcode_t {
     ADD = 0x1,
@@ -20,7 +21,7 @@ enum opcode_t {
     JMPC_PLCHLDR = 0xFE
 };
 typedef enum opcode_t opcode_t;
-typedef char operand_t;
+typedef uint16_t operand_t;
 typedef unsigned int instr_index_t;
 
 #define R0  0

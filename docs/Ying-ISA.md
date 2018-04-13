@@ -4,10 +4,10 @@ Ying Instruction Set Architecture
 This document describes the ISA of Ying CPUs. Yang compiles programs for this
 architecture.
 
-Ying is an 8-bits architecture:
-- Addresses are 8-bits long
-- Registers are 8-bits long
-- Opcodes   are 8-bits long
+Ying is a 16-bits architecture:
+- Addresses are 16-bits long
+- Registers are 16-bits long
+- Opcodes   are 16-bits long
 
 There are 16 registers named:
 - R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14 and PC

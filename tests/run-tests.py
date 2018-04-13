@@ -11,7 +11,7 @@ CONFIG['verbose'] = 0
 CONFIG['current_dir'] = os.path.dirname(os.path.abspath(__file__))
 CONFIG['negative'] = CONFIG['current_dir'] + '/negative/'
 CONFIG['positive'] = CONFIG['current_dir'] + '/positive/'
-CONFIG['compiler_path'] = CONFIG['current_dir'] + '/../build/compiler'
+CONFIG['compiler_path'] = CONFIG['current_dir'] + '/../src/yang'
 CONFIG['assembly_file_extension'] = '.s'
 
 TESTS_LIST = {}
@@ -89,7 +89,7 @@ def run_single_test(directory, filename):
     path = CONFIG['current_dir']+"/{}/{}".format(directory, filename)
 
     if not os.path.isfile(CONFIG['compiler_path']):
-        vprint("{}[ERROR] Compiler not found{}".format(bcolors.FAIL, bcolors.ENDC), 2)
+        vprint("{}[ERROR] Compiler not found at {} {}".format(bcolors.FAIL, CONFIG['compiler_path'], bcolors.ENDC), 2)
         exit(-1)
 
     if not os.path.isfile(path):

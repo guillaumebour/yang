@@ -6,6 +6,11 @@ static int verbosity_level;
 
 void log_error(char *msg, ...)
 {
+    if(verbosity_level < 0)
+    {
+        return;
+    }
+
     va_list argptr;
     va_start(argptr, msg);
     fprintf(stderr, "\x1b[31m(╯°□°）╯︵ ┻━┻\x1b[0m: ");
@@ -14,8 +19,13 @@ void log_error(char *msg, ...)
     va_end(argptr);
 }
 
-void log_warning(char *msg, ...)
+void log_warning(int verbosity, char *msg, ...)
 {
+    if(verbosity_level < verbosity)
+    {
+        return;
+    }
+
     va_list argptr;
     va_start(argptr, msg);
     fprintf(stderr, "\x1b[33m¯\\_(ツ)_/¯\x1b[0m: ");

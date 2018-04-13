@@ -5,5 +5,5 @@
 #define VERBOSITY_DEBUG          3
 
 void log_error(char *msg, ...);
-void log_warning(char *msg, ...);
+void log_warning(int verbosity, char *msg, ...);
 void set_verbosity_level(int level);

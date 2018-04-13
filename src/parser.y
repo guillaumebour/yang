@@ -164,6 +164,8 @@ int main(int argc, char *argv[]) {
     yyparse();
     asm_output_dump();
     asm_output_close();
+
+    return EXIT_SUCCESS;
 }
 
 void yyerror(char *p) {}

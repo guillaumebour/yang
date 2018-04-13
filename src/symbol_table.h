@@ -1,4 +1,4 @@
-#define INCORRECT_ADDRESS -1
+#define INCORRECT_ADDRESS 0
 
 typedef char   addr_t; /* 8-bits addresses */
 typedef char * identifier_t;

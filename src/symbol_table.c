@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define RAM_SIZE              0xFFFF
 #define STACK_SIZE            256
 
 struct stack_elem {
@@ -37,7 +38,7 @@ addr_t st_push(identifier_t variable_name)
     new_elem.identifier = malloc(variable_name_length * sizeof(char));
     strncpy(new_elem.identifier, variable_name, variable_name_length);
     new_elem.scope_depth = symbol_table.current_scope_depth;
-    new_elem.address = symbol_table.position;
+    new_elem.address = RAM_SIZE - symbol_table.position;
     new_elem.temporary = false;
 
     symbol_table.stack_array[symbol_table.position] = new_elem;
@@ -77,7 +78,7 @@ addr_t st_new_tmp()
 
     new_elem.identifier = "";
     new_elem.scope_depth = symbol_table.current_scope_depth;
-    new_elem.address = symbol_table.position;
+    new_elem.address = RAM_SIZE - symbol_table.position;
     new_elem.temporary = true;
 
     symbol_table.stack_array[symbol_table.position] = new_elem;

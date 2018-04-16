@@ -1,6 +1,3 @@
-AM_CFLAGS = -W -Wall -Wextra -ansi
-AM_CXXFLAGS = -W -Wall -Wextra -ansi
-
 bin_PROGRAMS = yang
 
 yang_SOURCES = \

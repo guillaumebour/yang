@@ -26,7 +26,7 @@ void yyerror(char *);
 %left  '*' '/'
 
 %type <str> tINT tVARIABLE_NAME
-%type <nb>  tINTEGER expr_statement 
+%type <nb>  tINTEGER expr_statement selection_statement_base
 
 %nonassoc tNO_ELSE
 %nonassoc tELSE
@@ -109,14 +109,23 @@ assignment_statement: tVARIABLE_NAME '=' expr_statement
     };
 selection_statement_base: tIF '(' expr_statement ')'
     {
-        asm_output_append_jmpc_placeholder();
+        $<nb>$ = asm_output_append_PLCHLDR();
     } statement
-    {
-        asm_output_resolve_last_jmpc();
-    }
+    { $$ = $<nb>5; }
     ;
 selection_statement: selection_statement_base %prec tNO_ELSE
-                   | selection_statement_base tELSE statement
+    {
+        asm_output_replace($1, JMPC, asm_output_next_addr(), 0, IGN);
+    }
+                   | selection_statement_base tELSE
+    {
+        $<nb>$ = asm_output_append_PLCHLDR();
+        asm_output_replace($1, JMPC, asm_output_next_addr(), 0, IGN);
+    } statement
+    {
+        asm_output_replace($<nb>3, JMP, asm_output_next_addr(), IGN, IGN);
+    }
+    ;
     ;
 
 scope_begin: '{'

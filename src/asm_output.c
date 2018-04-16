@@ -38,7 +38,7 @@ void set_asm_output_type(bool assembly_code)
     assembly_output = assembly_code;
 }
 
-void asm_output_append(opcode_t opcode, operand_t ope1, operand_t ope2, operand_t ope3)
+void asm_output_replace(instr_index_t index, opcode_t opcode, operand_t ope1, operand_t ope2, operand_t ope3)
 {
     struct instr_t inst;
     inst.opcode = opcode;
@@ -46,30 +46,21 @@ void asm_output_append(opcode_t opcode, operand_t ope1, operand_t ope2, operand_
     inst.ope2   = ope2;
     inst.ope3   = ope3;
 
-    instrs_buf[next_instr_index] = inst;
+    instrs_buf[index] = inst;
+}
+
+instr_index_t asm_output_append(opcode_t opcode, operand_t ope1, operand_t ope2, operand_t ope3)
+{
+    asm_output_replace(next_instr_index, opcode, ope1, ope2, ope3);
 
     next_instr_index ++;
+
+    return next_instr_index-1;
 }
 
-void asm_output_append_jmpc_placeholder()
+instr_index_t asm_output_next_addr()
 {
-    asm_output_append(JMPC_PLCHLDR, IGN, IGN, IGN);
-}
-
-void asm_output_resolve_last_jmpc()
-{
-    instr_index_t i = next_instr_index;
-
-    while(i) {
-        if (instrs_buf[i].opcode == JMPC_PLCHLDR) {
-            instrs_buf[i].opcode = JMPC;
-            instrs_buf[i].ope1 = next_instr_index;
-            instrs_buf[i].ope2 = 0;
-            break;
-        }
-
-        i--;
-    }
+    return next_instr_index;
 }
 
 void asm_output_dump()
@@ -125,9 +116,6 @@ void asm_output_dump()
                 break;
             case JMPC:
                 fprintf(output, "JMPC 0x%x, R%d\n", inst.ope1, inst.ope2);
-                break;
-            case JMPC_PLCHLDR:
-                log_error("Unexpected undefined branching. Ignoring.");
                 break;
             default:
                 log_error("Unexpected generated instruction. Ignoring.");

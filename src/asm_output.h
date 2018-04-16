@@ -16,9 +16,7 @@ enum opcode_t {
     SUP = 0xC,
     SUPE = 0xD,
     JMP = 0xE,
-    JMPC = 0xF,
-
-    JMPC_PLCHLDR = 0xFE
+    JMPC = 0xF
 };
 typedef enum opcode_t opcode_t;
 typedef uint16_t operand_t;
@@ -46,10 +44,9 @@ typedef unsigned int instr_index_t;
 void asm_output_init();
 void set_asm_output(char * filename);
 void set_asm_output_type(bool assembly_code);
-void asm_output_append_jmpc_placeholder();
-void asm_output_resolve_last_jmpc();
-void asm_output_append(opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
-void asm_output_insert(instr_index_t index, opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
+instr_index_t asm_output_append(opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
+instr_index_t asm_output_next_addr();
+void asm_output_replace(instr_index_t index, opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
 void asm_output_dump();
 void asm_output_close();
 
@@ -68,3 +65,4 @@ void asm_output_close();
 #define asm_output_append_SUPE(o1, o2, o3) asm_output_append(SUPE, o1, o2, o3)
 #define asm_output_append_JMP( o1)         asm_output_append(JMP,  o1, IGN, IGN)
 #define asm_output_append_JMPC(o1, o2)     asm_output_append(JMPC, o1, o2, IGN)
+#define asm_output_append_PLCHLDR()        asm_output_append_JMP(0)

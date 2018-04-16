@@ -128,5 +128,6 @@ void asm_output_dump()
 
 void asm_output_close()
 {
-    fclose(output);
+    if(output != stdout)
+        fclose(output);
 }

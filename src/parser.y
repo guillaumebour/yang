@@ -126,6 +126,14 @@ selection_statement: selection_statement_base %prec tNO_ELSE
         asm_output_replace($<nb>3, JMP, asm_output_next_addr(), IGN, IGN);
     }
     ;
+iteration_statement: tWHILE '(' expr_statement ')'
+    {
+        $<nb>$ = asm_output_append_PLCHLDR();
+    } statement
+    {
+        asm_output_append_JMP($<nb>5);
+        asm_output_replace($<nb>5, JMPC, asm_output_next_addr(), 0, IGN);
+    }
     ;
 
 scope_begin: '{'
@@ -143,6 +151,7 @@ statement: expr_statement         ';'
          | assignment_statement   ';'
          | compound_statement
          | selection_statement
+         | iteration_statement
          | ';'
     ;
 statements:

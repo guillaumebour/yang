@@ -16,23 +16,28 @@ void yyerror(char *);
     char *str;
 }
 
-%token tMAIN '{' '}' tCONST tINT '+' '-' '*' '/'
+%token tIDENTIFIER '{' '}' tCONST tINT '+' '-' '*' '/'
 %token '=' '(' ')' tNEW_LINE ';' tPRINTF
-%token tINTEGER tVARIABLE_NAME tDELIMITER tWHILE tFOR ',' tFLOAT '&'
+%token tINTEGER tIDENTIFIER tDELIMITER tWHILE tFOR ',' tFLOAT '&'
 %token tIF tELSE tRETURN ':' tSWITCH tCASE
 
 %right '='
 %left  '+' '-'
 %left  '*' '/'
 
-%type <str> tINT tVARIABLE_NAME
+%type <str> tINT tIDENTIFIER
 %type <nb>  tINTEGER expr_statement selection_statement_base
 
 %nonassoc tNO_ELSE
 %nonassoc tELSE
 %%
 
-main: tMAIN '(' ')' compound_statement
+external_declaration: declarations function_definitions
+
+function_definition: tIDENTIFIER '(' ')' compound_statement
+    ;
+function_definitions:
+    | function_definitions function_definition
     ;
 
 type: tINT
@@ -79,7 +84,7 @@ expr_statement: expr_statement '+' expr_statement
     {
         $$ = $2;
     }
-              | tVARIABLE_NAME
+              | tIDENTIFIER
     {
         addr_t addr = st_search($1);
         if(addr != INCORRECT_ADDRESS) {
@@ -109,7 +114,7 @@ expr_statement: expr_statement '+' expr_statement
         $$ = addr;
     }
     ;
-assignment_statement: tVARIABLE_NAME '=' expr_statement
+assignment_statement: tIDENTIFIER '=' expr_statement
     {
         addr_t addr = st_search($1);
         if(addr != INCORRECT_ADDRESS) {
@@ -158,12 +163,14 @@ scope_end: '}'
     };
 compound_statement: scope_begin declarations statements scope_end
     ;
+return_statement: tRETURN expr_statement ';'
 
 statement: expr_statement         ';'
          | assignment_statement   ';'
          | compound_statement
          | selection_statement
          | iteration_statement
+         | return_statement
          | ';'
     ;
 statements:
@@ -176,7 +183,7 @@ declarations:
             | declarations declaration
     ;
 
-initializer: tVARIABLE_NAME
+initializer: tIDENTIFIER
     {
         st_push($1);
     }

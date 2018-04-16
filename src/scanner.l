@@ -6,7 +6,6 @@ D                       [0-9]
 E                       [Ee][-+]?{D}+
 %x COMMENT
 %%
-main                    return tMAIN;
 [{]                     return '{';
 [}]                     return '}';
 const                   return tCONST;
@@ -38,7 +37,7 @@ printf                  return tPRINTF;
                         }
 [a-zA-Z_][a-zA-Z0-9_]*  {
                             yylval.str = strdup(yytext);
-                            return tVARIABLE_NAME;
+                            return tIDENTIFIER;
                         }
 [ \n\t]                 ;
 \/\/.*$                 ;

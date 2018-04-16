@@ -16,14 +16,14 @@ void yyerror(char *);
     char *str;
 }
 
-%token tMAIN tOPEN_BRACKET tCLOSE_BRACKET tCONST tINT tADD tSUB tMUL tDIV
-%token tEQUAL tOPEN_PARENTHESIS tCLOSE_PARENTHESIS tNEW_LINE tEND_LINE tPRINTF
-%token tINTEGER tVARIABLE_NAME tDELIMITER tWHILE tFOR tCOMMA tFLOAT tAMPERSAND
-%token tIF tELSE tRETURN tCOLON tSWITCH tCASE
+%token tMAIN '{' '}' tCONST tINT '+' '-' '*' '/'
+%token '=' '(' ')' tNEW_LINE ';' tPRINTF
+%token tINTEGER tVARIABLE_NAME tDELIMITER tWHILE tFOR ',' tFLOAT '&'
+%token tIF tELSE tRETURN ':' tSWITCH tCASE
 
-%right tEQUAL
-%left  tADD tSUB
-%left  tMUL tDIV
+%right '='
+%left  '+' '-'
+%left  '*' '/'
 
 %type <str> tINT tVARIABLE_NAME
 %type <nb>  tINTEGER expr_statement 
@@ -32,14 +32,14 @@ void yyerror(char *);
 %nonassoc tELSE
 %%
 
-main: tMAIN tOPEN_PARENTHESIS tCLOSE_PARENTHESIS compound_statement
+main: tMAIN '(' ')' compound_statement
     ;
 
 type: tINT
     | tFLOAT
     {};
 
-expr_statement: expr_statement tADD expr_statement
+expr_statement: expr_statement '+' expr_statement
     {
         addr_t tmp = st_new_tmp();
         asm_output_append_LOAD(R1,  $1);
@@ -48,7 +48,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
-              | expr_statement tSUB expr_statement
+              | expr_statement '-' expr_statement
     {
         addr_t tmp = st_new_tmp();
         asm_output_append_LOAD(R1,  $1);
@@ -57,7 +57,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
-              | expr_statement tMUL expr_statement
+              | expr_statement '*' expr_statement
     {
         addr_t tmp = st_new_tmp();
         asm_output_append_LOAD(R1,  $1);
@@ -66,7 +66,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
-              | expr_statement tDIV expr_statement
+              | expr_statement '/' expr_statement
     {
         addr_t tmp = st_new_tmp();
         asm_output_append_LOAD(R1,  $1);
@@ -75,7 +75,7 @@ expr_statement: expr_statement tADD expr_statement
         asm_output_append_STR (tmp, R0);
         $$ = tmp;
     }
-              | tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
+              | '(' expr_statement ')'
     {
         $$ = $2;
     }
@@ -97,7 +97,7 @@ expr_statement: expr_statement tADD expr_statement
         $$ = addr;
     }
     ;
-assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
+assignment_statement: tVARIABLE_NAME '=' expr_statement
     {
         addr_t addr = st_search($1);
         if(addr != INCORRECT_ADDRESS) {
@@ -107,7 +107,7 @@ assignment_statement: tVARIABLE_NAME tEQUAL expr_statement
             log_error("Variable %s non définie", $1);
         }
     };
-selection_statement_base: tIF tOPEN_PARENTHESIS expr_statement tCLOSE_PARENTHESIS
+selection_statement_base: tIF '(' expr_statement ')'
     {
         asm_output_append_jmpc_placeholder();
     } statement
@@ -119,28 +119,28 @@ selection_statement: selection_statement_base %prec tNO_ELSE
                    | selection_statement_base tELSE statement
     ;
 
-scope_begin: tOPEN_BRACKET
+scope_begin: '{'
     {
         st_enter_scope();
     };
-scope_end: tCLOSE_BRACKET
+scope_end: '}'
     {
         st_leave_scope();
     };
 compound_statement: scope_begin declarations statements scope_end
     ;
 
-statement: expr_statement         tEND_LINE
-         | assignment_statement   tEND_LINE
+statement: expr_statement         ';'
+         | assignment_statement   ';'
          | compound_statement
          | selection_statement
-         | tEND_LINE
+         | ';'
     ;
 statements:
           | statements statement
     ;
 
-declaration: type initializers   tEND_LINE
+declaration: type initializers   ';'
     ;
 declarations:
             | declarations declaration
@@ -151,7 +151,7 @@ initializer: tVARIABLE_NAME
         st_push($1);
     }
     ;
-initializers: initializer tCOMMA initializers
+initializers: initializer ',' initializers
             | initializer
     ;
 %%

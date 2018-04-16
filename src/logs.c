@@ -6,7 +6,7 @@ static int verbosity_level;
 
 void log_error(char *msg, ...)
 {
-    if(verbosity_level < 0)
+    if(verbosity_level >= 0)
     {
         va_list argptr;
         va_start(argptr, msg);
@@ -19,7 +19,7 @@ void log_error(char *msg, ...)
 
 void log_warning(int verbosity, char *msg, ...)
 {
-    if(verbosity_level < verbosity)
+    if(verbosity_level >= verbosity)
     {
         va_list argptr;
         va_start(argptr, msg);

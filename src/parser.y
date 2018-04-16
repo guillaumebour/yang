@@ -186,6 +186,6 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void yyerror(char *p) {}
+void yyerror(char *p) { log_error("%s", p); }
 
 void yywrap() {}

@@ -88,6 +88,18 @@ expr_statement: expr_statement '+' expr_statement
             log_error("Variable %s non définie", $1);
         }
     }
+              | '&' tVARIABLE_NAME
+    {
+        addr_t addr_addr = st_search($2);
+        if(addr_addr != INCORRECT_ADDRESS) {
+            addr_t addr = st_new_tmp();
+            asm_output_append_AFC(R0,        addr_addr);
+            asm_output_append_STR(addr,      R0);
+            $$ = addr;
+        } else {
+            log_error("Variable %s non définie", $2);
+        }
+    }
               | tINTEGER
     {
         int val = $1;

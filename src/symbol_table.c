@@ -12,6 +12,7 @@ struct stack_elem {
     unsigned int scope_depth;
     addr_t       address;
     bool         temporary;
+    vartype_t    type;
 };
 
 struct stack {
@@ -28,18 +29,19 @@ void st_init()
     symbol_table.position = 0;
 }
 
-addr_t st_push(identifier_t variable_name)
+addr_t st_push(identifier_t name, vartype_t type)
 {
     struct stack_elem new_elem;
-    unsigned int variable_name_length;
+    unsigned int name_length;
 
-    variable_name_length = strlen(variable_name);
+    name_length = strlen(name);
 
-    new_elem.identifier = malloc(variable_name_length * sizeof(char));
-    strncpy(new_elem.identifier, variable_name, variable_name_length);
+    new_elem.identifier = malloc(name_length * sizeof(char));
+    strncpy(new_elem.identifier, name, name_length);
     new_elem.scope_depth = symbol_table.current_scope_depth;
     new_elem.address = RAM_SIZE - symbol_table.position;
     new_elem.temporary = false;
+    new_elem.type = type;
 
     symbol_table.stack_array[symbol_table.position] = new_elem;
     symbol_table.position ++;
@@ -87,7 +89,7 @@ addr_t st_new_tmp()
     return new_elem.address;
 }
 
-addr_t st_search(identifier_t variable_name)
+addr_t st_search(identifier_t name, vartype_t expected_type)
 {
     int i = symbol_table.position-1;
 
@@ -96,7 +98,7 @@ addr_t st_search(identifier_t variable_name)
 
         curr_elem = symbol_table.stack_array[i];
 
-        if(strcmp(variable_name, curr_elem.identifier) == 0)
+        if(strcmp(name, curr_elem.identifier) == 0 && curr_elem.type == expected_type)
             return curr_elem.address;
 
         i--;

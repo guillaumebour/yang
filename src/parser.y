@@ -18,7 +18,7 @@ void yyerror(char *);
 
 %token tIDENTIFIER '{' '}' tCONST tINT '+' '-' '*' '/'
 %token '=' '(' ')' tNEW_LINE ';' tPRINTF
-%token tINTEGER tIDENTIFIER tDELIMITER tWHILE tFOR ',' tFLOAT '&'
+%token tINTEGER tDELIMITER tWHILE tFOR ',' tFLOAT '&'
 %token tIF tELSE tRETURN ':' tSWITCH tCASE
 
 %right '='
@@ -86,16 +86,16 @@ expr_statement: expr_statement '+' expr_statement
     }
               | tIDENTIFIER
     {
-        addr_t addr = st_search($1);
+        addr_t addr = st_search($1, INTEGER);
         if(addr != INCORRECT_ADDRESS) {
             $$ = addr;
         } else {
             log_error("Variable %s non définie", $1);
         }
     }
-              | '&' tVARIABLE_NAME
+              | '&' tIDENTIFIER
     {
-        addr_t addr_addr = st_search($2);
+        addr_t addr_addr = st_search($2, INTEGER);
         if(addr_addr != INCORRECT_ADDRESS) {
             addr_t addr = st_new_tmp();
             asm_output_append_AFC(R0,        addr_addr);
@@ -116,7 +116,7 @@ expr_statement: expr_statement '+' expr_statement
     ;
 assignment_statement: tIDENTIFIER '=' expr_statement
     {
-        addr_t addr = st_search($1);
+        addr_t addr = st_search($1, INTEGER);
         if(addr != INCORRECT_ADDRESS) {
             asm_output_append_LOAD(R0,   $3);
             asm_output_append_STR (addr, R0);
@@ -185,7 +185,7 @@ declarations:
 
 initializer: tIDENTIFIER
     {
-        st_push($1);
+        st_push($1, INTEGER);
     }
     ;
 initializers: initializer ',' initializers

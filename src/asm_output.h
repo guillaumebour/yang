@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include "symbol_table.h"
 
 enum opcode_t {
     ADD = 0x1,
@@ -16,7 +17,10 @@ enum opcode_t {
     SUP = 0xC,
     SUPE = 0xD,
     JMP = 0xE,
-    JMPC = 0xF
+    JMPC = 0xF,
+    POP = 0x10,
+    PUSH = 0x11,
+    JMPR = 0x12
 };
 typedef enum opcode_t opcode_t;
 typedef uint16_t operand_t;
@@ -47,6 +51,8 @@ void set_asm_output_type(bool assembly_code);
 instr_index_t asm_output_append(opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
 instr_index_t asm_output_next_addr();
 void asm_output_replace(instr_index_t index, opcode_t inst, operand_t ope1, operand_t ope2, operand_t ope3);
+void add_function_entry(identifier_t name);
+instr_index_t search_function(identifier_t name);
 void asm_output_dump();
 void asm_output_close();
 
@@ -65,4 +71,7 @@ void asm_output_close();
 #define asm_output_append_SUPE(o1, o2, o3) asm_output_append(SUPE, o1, o2, o3)
 #define asm_output_append_JMP( o1)         asm_output_append(JMP,  o1, IGN, IGN)
 #define asm_output_append_JMPC(o1, o2)     asm_output_append(JMPC, o1, o2, IGN)
+#define asm_output_append_POP(o1)          asm_output_append(POP,  o1, IGN, IGN)
+#define asm_output_append_PUSH(o1)         asm_output_append(PUSH, o1, IGN, IGN)
+#define asm_output_append_JMPR(o1)         asm_output_append(JMPR, o1, IGN, IGN)
 #define asm_output_append_PLCHLDR()        asm_output_append_JMP(0)

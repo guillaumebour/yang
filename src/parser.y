@@ -1,7 +1,6 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "symbol_table.h"
 #include "logs.h"
 #include "asm_output.h"
 #include "logs.h"
@@ -34,8 +33,11 @@ void yyerror(char *);
 
 external_declaration: declarations function_definitions
 
-function_definition: tIDENTIFIER '(' ')' compound_statement
-    ;
+function_definition: tIDENTIFIER '(' ')'
+    {
+        st_push($1, FUNCTION);
+        add_function_entry($1);
+    } compound_statement;
 function_definitions:
     | function_definitions function_definition
     ;
@@ -164,6 +166,22 @@ scope_end: '}'
 compound_statement: scope_begin declarations statements scope_end
     ;
 return_statement: tRETURN expr_statement ';'
+    {
+        asm_output_append_POP(R0);
+        asm_output_append_JMPR(R0);
+    }
+call_statement: tIDENTIFIER '(' ')'
+    {
+        instr_index_t addr = search_function($1);
+
+        if(addr != INCORRECT_ADDRESS) {
+            asm_output_append_PUSH(R0);
+            asm_output_append_JMP(addr);
+        } else {
+            log_error("Incorrect address for function '%s'", $1);
+        }
+    }
+
 
 statement: expr_statement         ';'
          | assignment_statement   ';'
@@ -171,6 +189,7 @@ statement: expr_statement         ';'
          | selection_statement
          | iteration_statement
          | return_statement
+         | call_statement         ';'
          | ';'
     ;
 statements:

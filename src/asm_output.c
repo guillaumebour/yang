@@ -2,9 +2,12 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
 #include "logs.h"
 
 #define MAX_INSTR_NB 2048
+#define FUNCTION_TABLE_SIZE 256
 
 static FILE *output;
 static bool assembly_output;
@@ -19,9 +22,18 @@ struct instr_t {
 static instr_index_t next_instr_index;
 static struct instr_t instrs_buf[MAX_INSTR_NB];
 
+struct function_entry {
+    identifier_t identifier;
+    instr_index_t address_index;
+};
+
+static unsigned int function_table_index = 0;
+static struct function_entry function_table[FUNCTION_TABLE_SIZE];
+
+
 void asm_output_init()
 {
-    next_instr_index = 0;
+    next_instr_index = 1;
     assembly_output = true;
 }
 
@@ -36,6 +48,36 @@ void set_asm_output(char * filename)
 void set_asm_output_type(bool assembly_code)
 {
     assembly_output = assembly_code;
+}
+
+void add_function_entry(identifier_t name)
+{
+    struct function_entry new_function;
+    unsigned int name_length;
+
+    name_length = strlen(name);
+
+    new_function.identifier = malloc(name_length * sizeof(char));
+    strncpy(new_function.identifier, name, name_length);
+    new_function.address_index = next_instr_index;
+
+    function_table[function_table_index] = new_function;
+    function_table_index ++;
+}
+
+instr_index_t search_function(identifier_t name)
+{
+    int i;
+
+    for(i = 0; i < function_table_index; i++) {
+        struct function_entry function = function_table[i];
+
+        if(strcmp(function.identifier, name) == 0) {
+            return function.address_index;
+        }
+    }
+
+    return INCORRECT_ADDRESS;
 }
 
 void asm_output_replace(instr_index_t index, opcode_t opcode, operand_t ope1, operand_t ope2, operand_t ope3)
@@ -65,6 +107,20 @@ instr_index_t asm_output_next_addr()
 
 void asm_output_dump()
 {
+    identifier_t main_name = "main";
+    instr_index_t main_addr = search_function(main_name);
+
+    if(main_addr != INCORRECT_ADDRESS) {
+        struct instr_t inst;
+        inst.opcode = JMP;
+        inst.ope1   = main_addr;
+
+        instrs_buf[0] = inst;
+    } else {
+        log_error("No main method found.");
+        exit(EXIT_FAILURE);
+    }
+
     if(assembly_output) {
         instr_index_t i = 0;
 
@@ -114,8 +170,17 @@ void asm_output_dump()
             case JMP:
                 fprintf(output, "JMP 0x%x\n", inst.ope1);
                 break;
+            case POP:
+                fprintf(output, "POP 0x%x\n", inst.ope1);
+                break;
+            case PUSH:
+                fprintf(output, "PUSH 0x%x\n", inst.ope1);
+                break;
             case JMPC:
                 fprintf(output, "JMPC 0x%x, R%d\n", inst.ope1, inst.ope2);
+                break;
+            case JMPR:
+                fprintf(output, "JMPR R%d\n", inst.ope1);
                 break;
             default:
                 log_error("Unexpected generated instruction. Ignoring.");

@@ -183,7 +183,7 @@ void asm_output_dump()
                 fprintf(output, "JMPR R%d\n", inst.ope1);
                 break;
             default:
-                log_error("Unexpected generated instruction. Ignoring.");
+                log_warning(1, "Unexpected generated instruction. Ignoring.");
             }
             i ++;
         }

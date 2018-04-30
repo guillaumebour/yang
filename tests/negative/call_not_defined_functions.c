@@ -4,8 +4,9 @@ func()
     a = 1;
     return a;
 }
-main() {
+main()
+{
     int b;
     b = 2;
-    func();
+    cnuf();
 }

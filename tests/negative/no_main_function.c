@@ -1,11 +1,12 @@
-func()
+func1()
 {
     int a;
     a = 1;
     return a;
 }
-main() {
+func2()
+{
     int b;
     b = 2;
-    func();
+    func1();
 }

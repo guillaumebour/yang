@@ -99,8 +99,8 @@ def run_single_test(directory, filename):
     cat = subprocess.Popen(["cat", path], stdout=subprocess.PIPE)
     test = subprocess.Popen([CONFIG['compiler_path']], stdin=cat.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    out_text = test.stdout.read()
-    err_text = test.stderr.read()
+    out_text = test.stdout.read().decode('UTF-8')
+    err_text = test.stderr.read().decode('UTF-8')
 
     result_test = (err_text == "")
 

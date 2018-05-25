@@ -188,6 +188,7 @@ def get_result_table():
     table += "| - failed           {}\t|\n".format(GLOBAL_RESULT['negative_tests_not_passed'])
     table += "|                      \t|\n"
     table += "| Negative           {}\t|\n".format(total_negative)
+    table += "| Positive           {}\t|\n".format(total_positive)
     table += "| Total:             {}\t|\n".format(total)
     table += "-------------------------\n"
 

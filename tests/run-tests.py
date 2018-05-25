@@ -14,6 +14,8 @@ CONFIG['negative'] = CONFIG['current_dir'] + '/negative/'
 CONFIG['positive'] = CONFIG['current_dir'] + '/positive/'
 CONFIG['compiler_path'] = CONFIG['current_dir'] + '/../src/yang'
 CONFIG['assembly_file_extension'] = '.s'
+CONFIG['dump'] = False
+CONFIG['dump-all'] = False
 
 TESTS_LIST = {}
 
@@ -43,7 +45,7 @@ def usage():
 
 def parse_args():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hvq", ["help"])
+        opts, args = getopt.getopt(sys.argv[1:], "hvq", ["help", "dump", "dump-all"])
     except getopt.GetoptError as err:
         vprint(str(err), 0)
         usage()
@@ -56,6 +58,9 @@ def parse_args():
         elif o in ("-h", "--help"):
             usage()
             sys.exit()
+        elif o in ("--dump", "--dump-all"):
+            opt = o.replace("--", "")
+            CONFIG[opt] = True
         else:
             assert False, "unhandled option"
 
@@ -67,6 +72,22 @@ def textify_filename(filename):
 def vprint(string, level):
     if CONFIG['verbose'] >= level:
         print(string)
+
+
+def check_for_compiler():
+    if not os.path.isfile(CONFIG['compiler_path']):
+        vprint("{}[ERROR] Compiler not found at {} {}".format(bcolors.FAIL, CONFIG['compiler_path'], bcolors.ENDC), 2)
+        exit(-1)
+
+
+def exec_yang(path):
+    cat = subprocess.Popen(["cat", path], stdout=subprocess.PIPE)
+    test = subprocess.Popen([CONFIG['compiler_path']], stdin=cat.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    out_text = test.stdout.read().decode('UTF-8')
+    err_text = test.stderr.read().decode('UTF-8')
+
+    return out_text, err_text
 
 
 def init_tests_list():
@@ -86,21 +107,44 @@ def init_tests_list():
     vprint("[+] Tests list has been initialized", 2)
 
 
+def dump_tests_outputs():
+    vprint("[~] Dumping tests outputs...", 1)
+
+    check_for_compiler()
+
+    nb_dumped_files = 0
+
+    for file in TESTS_LIST['positive']:
+        path = CONFIG['positive'] + file
+
+        if not os.path.isfile(path):
+            vprint("[WARNING] The file {} does not exist or is not a regular file.".format(path), 0)
+
+        result_file = path.replace('.c', CONFIG['assembly_file_extension'])
+
+        if (not (os.path.exists(result_file) and os.path.isfile(result_file))) or CONFIG['dump-all']:
+            vprint("[~] Dumping {}".format(result_file), 1)
+
+            out_text, err_text = exec_yang(path)
+
+            with open(result_file, 'w') as content_file:
+                content_file.write(out_text)
+                content_file.close()
+
+            nb_dumped_files += 1
+
+    vprint("[*] Done ! {} file(s) have been dumped !".format(nb_dumped_files), 1)
+
+
 def run_single_test(directory, filename):
     path = CONFIG['current_dir']+"/{}/{}".format(directory, filename)
 
-    if not os.path.isfile(CONFIG['compiler_path']):
-        vprint("{}[ERROR] Compiler not found at {} {}".format(bcolors.FAIL, CONFIG['compiler_path'], bcolors.ENDC), 2)
-        exit(-1)
+    check_for_compiler()
 
     if not os.path.isfile(path):
         return False, None
 
-    cat = subprocess.Popen(["cat", path], stdout=subprocess.PIPE)
-    test = subprocess.Popen([CONFIG['compiler_path']], stdin=cat.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    out_text = test.stdout.read().decode('UTF-8')
-    err_text = test.stderr.read().decode('UTF-8')
+    out_text, err_text = exec_yang(path)
 
     result_test = (err_text == "")
 
@@ -198,8 +242,11 @@ def get_result_table():
 def main():
     parse_args()
     init_tests_list()
-    run_tests()
-    vprint(get_result_table(), 0)
+    if CONFIG['dump'] or CONFIG['dump-all']:
+        dump_tests_outputs()
+    else:
+        run_tests()
+        vprint(get_result_table(), 0)
 
 
 if __name__ == "__main__":

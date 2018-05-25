@@ -3,10 +3,11 @@
 import getopt, sys, os, subprocess
 
 CONFIG = {}
-# -1 =  Quiet   (No output at all)
-# 0  =  Normal  (Only prints the final result)
-# 1  =  Verbose (Prints steps)
-# 2  =  Debug   (Prints results for each tests)
+# -1 =  Quiet           (No output at all)
+# 0  =  Normal          (Only prints the final result)
+# 1  =  Verbose         (Prints steps)
+# 2  =  Very verbose    (Prints results for each tests)
+# 3  =  Debug           (Prints std output and error output for each test)
 CONFIG['verbose'] = 0
 CONFIG['current_dir'] = os.path.dirname(os.path.abspath(__file__))
 CONFIG['negative'] = CONFIG['current_dir'] + '/negative/'
@@ -102,6 +103,9 @@ def run_single_test(directory, filename):
     err_text = test.stderr.read()
 
     result_test = (err_text == "")
+
+    vprint("Result: {}".format(out_text), 3)
+    vprint("Error: {}".format(err_text), 3)
 
     if path != CONFIG['positive']+"{}".format(filename):
         result_test = not result_test

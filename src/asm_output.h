@@ -19,8 +19,7 @@ enum opcode_t {
     JMP = 0xE,
     JMPC = 0xF,
     POP = 0x10,
-    PUSH = 0x11,
-    JMPR = 0x12
+    PUSH = 0x11
 };
 typedef enum opcode_t opcode_t;
 typedef uint16_t operand_t;
@@ -73,5 +72,4 @@ void asm_output_close();
 #define asm_output_append_JMPC(o1, o2)     asm_output_append(JMPC, o1, o2, IGN)
 #define asm_output_append_POP(o1)          asm_output_append(POP,  o1, IGN, IGN)
 #define asm_output_append_PUSH(o1)         asm_output_append(PUSH, o1, IGN, IGN)
-#define asm_output_append_JMPR(o1)         asm_output_append(JMPR, o1, IGN, IGN)
 #define asm_output_append_PLCHLDR()        asm_output_append_JMP(0)

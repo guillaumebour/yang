@@ -167,15 +167,14 @@ compound_statement: scope_begin declarations statements scope_end
     ;
 return_statement: tRETURN expr_statement ';'
     {
-        asm_output_append_POP(R0);
-        asm_output_append_JMPR(R0);
+        asm_output_append_POP(PC);
     }
 call_statement: tIDENTIFIER '(' ')'
     {
         instr_index_t addr = search_function($1);
 
         if(addr != INCORRECT_ADDRESS) {
-            asm_output_append_PUSH(R0);
+            asm_output_append_PUSH(PC);
             asm_output_append_JMP(addr);
         } else {
             log_error("Incorrect address for function '%s'", $1);

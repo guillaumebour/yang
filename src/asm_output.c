@@ -179,9 +179,6 @@ void asm_output_dump()
             case JMPC:
                 fprintf(output, "JMPC 0x%x, R%d\n", inst.ope1, inst.ope2);
                 break;
-            case JMPR:
-                fprintf(output, "JMPR R%d\n", inst.ope1);
-                break;
             default:
                 log_warning(1, "Unexpected generated instruction. Ignoring.");
             }

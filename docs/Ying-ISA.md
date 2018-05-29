@@ -28,6 +28,6 @@ There are 16 registers named:
 | Superior   | 0xC    | SUP  Ri, Rj, Rk | [Ri] <- 1 if [Rj] >  [Rk], else 0    |
 | Sup or equ | 0xD    | SUPE Ri, Rj, Rk | [Ri] <- 1 if [Rj] >= [Rk], else 0    |
 | Jump       | 0xE    | JMP  @i         | Jump to the address @i               |
-| Cond. Jump | 0xF    | JMPC @i, Rj     | Jump to the address @i if Ri = 0     |
+| Cond. Jump | 0xF    | JMPC @i, Rj     | Jump to the address @i if Rj = 0     |
 | Pop        | 0x10   | POP  Ri         | Store the top of the stack on Ri     |
 | Push       | 0x11   | PUSH Ri         | Add the content of Ri on the stack   |

@@ -26,7 +26,7 @@ int handle_args(int argc, char * argv[])
                 sprintf(filename, "%s%s", BUILD_DIR, optarg);
                 break;
             case 'h':
-                fprintf(stderr, "Usage: compiler [options] FILE\n"
+                fprintf(stderr, "Usage: compiler [options] < FILE\n"
                                 "Options:\n"
                                 "  -v            Increase verbosity level.\n"
                                 "  -q            Set verbosity level to quiet.\n"

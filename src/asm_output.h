@@ -21,7 +21,7 @@ enum opcode_t {
     POP = 0x10,
     PUSH = 0x11
 };
-typedef enum opcode_t opcode_t;
+typedef uint16_t opcode_t;
 typedef uint16_t operand_t;
 typedef unsigned int instr_index_t;
 

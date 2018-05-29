@@ -13,7 +13,7 @@ int handle_args(int argc, char * argv[])
     int verbose_level = 0;
     char *filename = NULL;
 
-    while( (c = getopt(argc, argv, "hqvo:")) != -1){
+    while( (c = getopt(argc, argv, "hqvo:b")) != -1){
         switch(c) {
             case 'v':
                 verbose_level++;
@@ -25,11 +25,15 @@ int handle_args(int argc, char * argv[])
                 filename = malloc(sizeof(BUILD_DIR) + sizeof(optarg) + 1);
                 sprintf(filename, "%s%s", BUILD_DIR, optarg);
                 break;
+            case 'b':
+                set_asm_output_type(false);
+                break;
             case 'h':
                 fprintf(stderr, "Usage: compiler [options] < FILE\n"
                                 "Options:\n"
                                 "  -v            Increase verbosity level.\n"
                                 "  -q            Set verbosity level to quiet.\n"
+                                "  -b            Output raw binary code instead of assembly.\n"
                                 "  -o filename   Write assembly to file. Default is stdout.\n"
                                 "  -h            Display this help message.\n"
                 );

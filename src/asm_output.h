@@ -42,7 +42,7 @@ typedef unsigned int instr_index_t;
 #define R14 14
 #define PC  15
 
-#define IGN          0xFF
+#define IGN          0xFFFF
 
 void asm_output_init();
 void set_asm_output(char * filename);

@@ -73,7 +73,7 @@ instr_index_t search_function(identifier_t name)
         struct function_entry function = function_table[i];
 
         if(strcmp(function.identifier, name) == 0) {
-            return function.address_index;
+            return function.address_index*8;
         }
     }
 
@@ -102,7 +102,7 @@ instr_index_t asm_output_append(opcode_t opcode, operand_t ope1, operand_t ope2,
 
 instr_index_t asm_output_next_addr()
 {
-    return next_instr_index;
+    return next_instr_index*8;
 }
 
 void asm_output_dump()

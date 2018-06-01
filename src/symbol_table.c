@@ -5,7 +5,9 @@
 #include <string.h>
 
 #define RAM_SIZE              0xFFFF
-#define STACK_SIZE            256
+#define STACK_SIZE            0x00F0
+
+#define SYMB_TAB_SIZE         256
 
 struct stack_elem {
     identifier_t identifier;
@@ -16,7 +18,7 @@ struct stack_elem {
 };
 
 struct stack {
-    struct stack_elem stack_array[STACK_SIZE];
+    struct stack_elem stack_array[SYMB_TAB_SIZE];
     unsigned int position;
     unsigned int current_scope_depth;
 };
@@ -39,7 +41,7 @@ addr_t st_push(identifier_t name, vartype_t type)
     new_elem.identifier = malloc(name_length * sizeof(char));
     strncpy(new_elem.identifier, name, name_length);
     new_elem.scope_depth = symbol_table.current_scope_depth;
-    new_elem.address = RAM_SIZE - symbol_table.position;
+    new_elem.address = RAM_SIZE - STACK_SIZE - symbol_table.position;
     new_elem.temporary = false;
     new_elem.type = type;
 
@@ -80,7 +82,7 @@ addr_t st_new_tmp()
 
     new_elem.identifier = "";
     new_elem.scope_depth = symbol_table.current_scope_depth;
-    new_elem.address = RAM_SIZE - symbol_table.position;
+    new_elem.address = RAM_SIZE - STACK_SIZE - symbol_table.position;
     new_elem.temporary = true;
 
     symbol_table.stack_array[symbol_table.position] = new_elem;
@@ -114,7 +116,7 @@ void st_enter_scope()
 
 void st_leave_scope()
 {
-    while(symbol_table.position < STACK_SIZE) {
+    while(symbol_table.position < SYMB_TAB_SIZE) {
         struct stack_elem top_elem = symbol_table.stack_array[symbol_table.position];
 
         if(top_elem.scope_depth == symbol_table.current_scope_depth)

@@ -174,7 +174,10 @@ call_statement: tIDENTIFIER '(' ')'
         instr_index_t addr = search_function($1);
 
         if(addr != INCORRECT_ADDRESS) {
-            asm_output_append_PUSH(PC);
+            asm_output_append_COP(R0, PC);
+            asm_output_append_AFC(R1, 16);
+            asm_output_append_ADD(R0, R0, R1);
+            asm_output_append_PUSH(R0);
             asm_output_append_JMP(addr);
         } else {
             log_error("Incorrect address for function '%s'", $1);

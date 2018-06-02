@@ -8,7 +8,11 @@
 
 int yylex(void);
 void yyerror(char *);
+
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 %}
+
+%locations
 
 %union {
     int nb;
@@ -31,16 +35,38 @@ void yyerror(char *);
 %nonassoc tELSE
 %%
 
-external_declaration: declarations function_definitions
+external_declaration: declarations function_definitions;
 
 function_definition: tIDENTIFIER '(' ')'
     {
+        st_push($1, FUNCTION);
+        add_function_entry($1);
+    } compound_statement
+    | tIDENTIFIER '(' decl_arg_list ')' 
+    {
+        printf("This one matches !\n");
         st_push($1, FUNCTION);
         add_function_entry($1);
     } compound_statement;
 function_definitions:
     | function_definitions function_definition
     ;
+
+decl_arg: type tIDENTIFIER
+    {
+        st_push($2, INTEGER);
+    }; 
+decl_arg_list: decl_arg
+    | decl_arg_list ',' decl_arg; 
+
+
+arg: tIDENTIFIER
+    {
+
+    }; 
+arg_list: arg
+    | arg_list ',' arg; 
+
 
 type: tINT
     | tFLOAT
@@ -183,6 +209,18 @@ call_statement: tIDENTIFIER '(' ')'
             log_error("Incorrect address for function '%s'", $1);
         }
     }
+    | tIDENTIFIER '(' arg_list ')'
+    {
+        printf("Here we are !\n");
+        instr_index_t addr = search_function($1);
+
+        if(addr != INCORRECT_ADDRESS) {
+            asm_output_append_PUSH(R0);
+            asm_output_append_JMP(addr);
+        } else {
+            log_error("Incorrect address for function '%s'", $1);
+        }
+    };
 
 
 statement: expr_statement         ';'
@@ -226,6 +264,6 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void yyerror(char *p) { log_error("%s", p); }
+void yyerror(char *p) { log_error("line %d : %s", yylloc.first_line, p); }
 
 void yywrap() {}

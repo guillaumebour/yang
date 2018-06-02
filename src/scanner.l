@@ -2,6 +2,7 @@
 #include "parser.h"
 %}
 
+%option yylineno
 D                       [0-9]
 E                       [Ee][-+]?{D}+
 %x COMMENT

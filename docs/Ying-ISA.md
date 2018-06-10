@@ -21,7 +21,7 @@ There are 16 registers named:
 | Copy       | 0x5    | COP  Ri, Rj     | [Ri] <- [Rj]                         |
 | Affect     | 0x6    | AFC  Ri, j      | [Ri] <- j                            |
 | Load       | 0x7    | LOAD Ri, @j     | [Ri] <- [@j]                         |
-| Save       | 0x8    | STR  @i, Rj     | [@i] <- [Rj]                         |
+| Store      | 0x8    | STR  @i, Rj     | [@i] <- [Rj]                         |
 | Equal      | 0x9    | EQU  Ri, Rj, Rk | [Ri] <- 1 if [Rj] =  [Rk], else 0    |
 | Inferior   | 0xA    | INF  Ri, Rj, Rk | [Ri] <- 1 if [Rj] <  [Rk], else 0    |
 | Inf or equ | 0xB    | INFE Ri, Rj, Rk | [Ri] <- 1 if [Rj] <= [Rk], else 0    |

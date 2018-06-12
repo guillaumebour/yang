@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 #include "logs.h"
 #include "asm_output.h"
 
@@ -20,7 +21,7 @@ int handle_args(int argc, char * argv[])
                 verbose_level = VERBOSITY_QUIET;
                 break;
             case 'o':
-                filename = malloc(sizeof(optarg) + 1);
+                filename = malloc(strlen(optarg) * sizeof(char) + 1);
                 sprintf(filename, "%s", optarg);
                 break;
             case 'b':

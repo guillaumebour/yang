@@ -1,6 +1,7 @@
 #include "logs.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 static int verbosity_level;
 
@@ -15,6 +16,7 @@ void log_error(char *msg, ...)
         fprintf(stderr, "\n");
         va_end(argptr);
     }
+    exit(EXIT_FAILURE);
 }
 
 void log_warning(int verbosity, char *msg, ...)

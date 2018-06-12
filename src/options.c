@@ -5,15 +5,13 @@
 #include "logs.h"
 #include "asm_output.h"
 
-#define BUILD_DIR "build/"
-
 int handle_args(int argc, char * argv[])
 {
     char c;
     int verbose_level = 0;
     char *filename = NULL;
 
-    while( (c = getopt(argc, argv, "hqvo:b")) != -1){
+    while( (c = getopt(argc, argv, "hqvbo:")) != -1){
         switch(c) {
             case 'v':
                 verbose_level++;
@@ -22,8 +20,8 @@ int handle_args(int argc, char * argv[])
                 verbose_level = VERBOSITY_QUIET;
                 break;
             case 'o':
-                filename = malloc(sizeof(BUILD_DIR) + sizeof(optarg) + 1);
-                sprintf(filename, "%s%s", BUILD_DIR, optarg);
+                filename = malloc(sizeof(optarg) + 1);
+                sprintf(filename, "%s", optarg);
                 break;
             case 'b':
                 set_asm_output_type(false);

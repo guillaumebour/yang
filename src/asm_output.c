@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include "logs.h"
 
 #define MAX_INSTR_NB 2048
@@ -43,6 +44,9 @@ void set_asm_output(char * filename)
         output = fopen(filename, "w");
     else
         output = stdout;
+
+    if(!output)
+        log_error("An error occured while opening file: %s", strerror(errno));
 }
 
 void set_asm_output_type(bool assembly_code)
